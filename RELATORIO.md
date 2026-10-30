@@ -18,7 +18,7 @@ Decisões técnicas:
 
 ## Evidência real
 
-O projeto final foi enviado ao endpoint de compilação usado pela interface oficial do Shortcuty Studio, com sessão e CSRF normais. Resultado de Build: `complete`, `ok: true`, compilador `0.1.4`, **0 erros, 33 avisos SS2101 e 402 ações nativas**. O resultado completo está em `compilacao-oficial.json`, com parâmetros das ações e localizações dos avisos.
+O projeto final foi enviado ao endpoint de compilação usado pela interface oficial do Shortcuty Studio, com sessão e CSRF normais. Resultado de Build: `complete`, `ok: true`, compilador `0.1.4`, **0 erros, 37 avisos SS2101 e 553 ações nativas**. O resultado completo está em `compilacao-oficial.json`, com parâmetros das ações e localizações dos avisos.
 
 A checagem inicial encontrou problemas de sintaxe e de opcionais, que foram corrigidos antes da compilação final. O esquema oficial do projeto foi validado localmente com JSON Schema. O conteúdo do projeto importável coincide com o arquivo fonte; o cadastro entregue foi comparado byte a byte com o anexo original.
 
@@ -56,3 +56,15 @@ A gravação recebida mostra a seleção de uma pasta, as perguntas do primeiro 
 Os menus dos produtos exibiam o título genérico “Qual?”. O build anterior ligava a variável diretamente a WFMenuPrompt como WFTextTokenAttachment. O código agora usa texto interpolado `Conferir: ...`, compilado como WFTextTokenString, com o nome anexado ao texto. O título dinâmico do menu de encerramento recebeu a mesma correção. Os parâmetros gerados foram inspecionados e confirmados nos dois menus. A confirmação visual no iPhone continua pendente.
 
 Build desta correção: zero erros, 33 avisos SS2101, 402 ações nativas. Cadastro e formato de persistência permanecem iguais.
+
+## Escolha livre e marcação de conferidos
+
+A navegação sequencial foi substituída por uma lista nativa Choose from List. Duas passagens pelo cadastro montam os produtos não conferidos (⬜) primeiro e os conferidos (✅) depois, com ordem alfabética em ambos. A lista é reconstruída após cada escolha. O rótulo selecionado é mapeado para o ID estável; não se extrai o ID de texto de nomes. Conferido significa existência das três quantidades, incluindo zero.
+
+É possível escolher um item já conferido e substituir suas três quantidades na sessão aberta. Não há anexação de registros duplicados. A opção Voltar sem salvar preserva o registro anterior. As três atualizações são feitas somente no ramo Salvar item, seguido por uma única gravação do JSON. Campos vazios ou valores inválidos retornam o sentinela interno -1; as perguntas seguintes e o salvamento são condicionados a valor >= 0. O sentinela nunca é gravado. O Cancelar do diálogo nativo pode terminar a execução; não é tratado como retorno programático à lista.
+
+Pausar encerra a execução; Ver resumo mantém o estado aberto; Finalizar oferece confirmação e informa quantos faltam. São opções na própria lista. Sem while/break na linguagem, há um limite explícito de 120 escolhas por execução; atingido o limite, abre-se o resumo e pode-se retomar depois. Ao pedir resumo/finalizar antes disso, os ciclos restantes passam pelo guard de navegação sem reconstruir a lista; o tempo desse término depende do iPhone. Não se afirma que essa latência foi medida.
+
+Build oficial final: complete/ok, compilador 0.1.4, zero erros, 37 avisos SS2101, 553 ações nativas. Foram inspecionados os parâmetros nativos de Append to Variable e Choose from List: ambos usam a variável opcoes, reconstruída a cada escolha. O esquema oficial do projeto foi validado; fonte e projeto estão sincronizados; o cadastro original continua idêntico byte a byte. Não houve teste de execução da lista no iPhone.
+
+Testar no aparelho: escolher diretamente um produto no fim da lista; salvar com três zeros e observar ✅; verificar que passa para depois dos ⬜; revisar o mesmo produto e confirmar ausência de duplicação; dar OK vazio em cada uma das três perguntas e verificar retorno sem alterações; usar Voltar sem salvar; pausar e retomar, verificando as marcas; conferir resumo, finalização e backup. Confirmar que a lista exibe exatamente os 60 produtos mais três opções de controle, sem itens duplicados, e medir o tempo de abertura/reabertura e de saída para o resumo.

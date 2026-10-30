@@ -10,18 +10,19 @@ def gravar(pasta: File, nome: Text, sessao: Dictionary):
   salvo = files.save(item: arquivo, folder: pasta, destination: nome, ask_where: false, overwrite: true)
   return salvo
 
+# -1 significa entrada vazia ou inválida; zero é quantidade válida.
 def quantidade(pergunta: Text) -> Number:
   resposta = input.ask(prompt: pergunta, type: "Number", ask_action_allows_decimal_numbers: false, ask_action_allows_negative_numbers: false)
   if resposta has no value:
-    exit()
+    return -1
   numero = as_type(resposta, "Number")
   if numero < 0:
-    alert("Use uma quantidade inteira igual ou maior que zero.")
-    exit()
+    alert("Use um inteiro igual ou maior que zero. O item não foi alterado.")
+    return -1
   inteiro = numbers.round(input: numero, round_mode: "Normal", to: "Ones Place")
   if inteiro != numero:
-    alert("Use somente números inteiros. O item não foi salvo.")
-    exit()
+    alert("Use somente inteiros. O item não foi alterado.")
+    return -1
   return numero
 
 shortcut:
@@ -105,59 +106,103 @@ shortcut:
     alert("Conferência finalizada: disponível somente para consulta.")
     modo = "resumo"
   if modo != "resumo":
-    for item in ordem:
-      p = as_type(item, "Dictionary")
-      id_bruto = p["id"]
-      nome_bruto = p["nome"]
-      if id_bruto has no value:
-        alert("Cadastro incompleto. Nenhuma alteração neste item.")
-        exit()
-      if nome_bruto has no value:
-        exit()
-      id = as_type(id_bruto, "Text")
-      nome = as_type(nome_bruto, "Text")
-      chave_e = text("\(id)_estoque")
-      chave_c = text("\(id)_comprar")
-      chave_p = text("\(id)_processar")
-      existente = data.value(input: valores, key: chave_e)
-      compra_existente = data.value(input: valores, key: chave_c)
-      processo_existente = data.value(input: valores, key: chave_p)
-      if existente has no value or compra_existente has no value or processo_existente has no value:
-        menu("Conferir: \(nome)"):
-          case "Conferir":
-            estoque = quantidade(text("\(nome) — estoque atual"))
-            comprar = quantidade(text("\(nome) — quantidade para COMPRAR (0 = nenhuma)"))
-            processar = quantidade(text("\(nome) — quantidade para PROCESSAR (0 = nenhuma)"))
-            alert(text("\(nome)\nEstoque: \(estoque)\nComprar: \(comprar)\nProcessar: \(processar)"), title: "Confirmar item", cancel: true)
-            estoque_txt = text(estoque)
-            comprar_txt = text(comprar)
-            processar_txt = text(processar)
-            valores = data.set_value(dictionary: valores, key: chave_e, value: estoque_txt)
-            valores = data.set_value(dictionary: valores, key: chave_c, value: comprar_txt)
-            valores = data.set_value(dictionary: valores, key: chave_p, value: processar_txt)
-            # Uma gravação por item; as três quantidades são confirmadas juntas.
-            sessao = {"formato": "papa-pizza-simples-1", "data": data, "estado": estado, "cadastro": cadastro, "ordem": ordem, "valores": valores}
-            salvo = gravar(pasta, nome_arquivo, sessao)
-          case "Deixar para depois":
-            comment("Permanece não conferido e reaparece na próxima retomada.")
-          case "Pausar":
-            alert("Os itens confirmados estão salvos. Use Continuar conferência para retomar.")
-            exit()
-    chaves = data.keys(input: valores, get_dictionary_value_type: "All Keys")
-    if chaves has no value:
-      quantidade_chaves = 0
-    else:
-      quantidade_chaves = count(chaves)
-    quantidade_itens = count(ordem)
-    pendentes = quantidade_itens - (quantidade_chaves / 3)
-    menu("Fim da lista. Não conferidos: \(pendentes)."):
-      case "Pausar e ver resumo":
-        comment("A conferência permanece aberta.")
-      case "Finalizar e ver resumo":
-        alert("Finalizar torna esta conferência somente para consulta, inclusive se houver itens não conferidos. Confirmar?", cancel: true)
-        estado = "finalizada"
-        sessao = {"formato": "papa-pizza-simples-1", "data": data, "estado": estado, "cadastro": cadastro, "ordem": ordem, "valores": valores}
-        salvo = gravar(pasta, nome_arquivo, sessao)
+    navegando = true
+    # Limite de navegação por execução; os dados persistem para continuar depois.
+    repeat 120 times:
+      if navegando == true:
+        opcoes = list(["📊 Ver resumo", "⏸ Pausar", "🏁 Finalizar conferência"])
+        ids = {}
+        faltantes = 0
+        # Duas passagens: não conferidos primeiro, conferidos depois.
+        for item in ["pendentes", "conferidos"]:
+          grupo_lista = item
+          for item in ordem:
+            p = as_type(item, "Dictionary")
+            id_bruto = p["id"]
+            nome_bruto = p["nome"]
+            if id_bruto has no value:
+              alert("Cadastro incompleto. Nenhum item foi alterado.")
+              exit()
+            if nome_bruto has no value:
+              exit()
+            id = as_type(id_bruto, "Text")
+            nome = as_type(nome_bruto, "Text")
+            chave_e = text("\(id)_estoque")
+            chave_c = text("\(id)_comprar")
+            chave_p = text("\(id)_processar")
+            e_existente = data.value(input: valores, key: chave_e)
+            c_existente = data.value(input: valores, key: chave_c)
+            p_existente = data.value(input: valores, key: chave_p)
+            conferido = true
+            if e_existente has no value or c_existente has no value or p_existente has no value:
+              conferido = false
+            incluir = false
+            rotulo = ""
+            if grupo_lista == "pendentes" and conferido == false:
+              rotulo = text("⬜ \(nome)")
+              incluir = true
+              faltantes = faltantes + 1
+            if grupo_lista == "conferidos" and conferido == true:
+              rotulo = text("✅ \(nome)")
+              incluir = true
+            if incluir == true:
+              variables.append(name: "opcoes", value: rotulo)
+              ids = data.set_value(dictionary: ids, key: rotulo, value: id)
+        selecao = lists.choose(items: opcoes, prompt: "Escolha o produto · ⬜ não conferido · ✅ conferido", multiple: false)
+        if selecao has no value:
+          exit()
+        escolhido = as_type(selecao, "Text")
+        if escolhido == "⏸ Pausar":
+          alert("Conferência pausada. Os itens confirmados estão salvos.")
+          exit()
+        if escolhido == "📊 Ver resumo":
+          navegando = false
+        if escolhido == "🏁 Finalizar conferência":
+          menu("Faltam \(faltantes) itens. Finalizar impede novas alterações."):
+            case "Voltar à lista":
+              comment("Conferência continua aberta.")
+            case "Confirmar finalização":
+              estado = "finalizada"
+              sessao = {"formato": "papa-pizza-simples-1", "data": data, "estado": estado, "cadastro": cadastro, "ordem": ordem, "valores": valores}
+              salvo = gravar(pasta, nome_arquivo, sessao)
+              navegando = false
+        id_escolhido = data.value(input: ids, key: escolhido)
+        if id_escolhido has value:
+          id_selecionado = as_type(id_escolhido, "Text")
+          for item in ordem:
+            p = as_type(item, "Dictionary")
+            id_bruto = p["id"]
+            nome_bruto = p["nome"]
+            if id_bruto has no value:
+              exit()
+            if nome_bruto has no value:
+              exit()
+            id = as_type(id_bruto, "Text")
+            nome = as_type(nome_bruto, "Text")
+            if id == id_selecionado:
+              chave_e = text("\(id)_estoque")
+              chave_c = text("\(id)_comprar")
+              chave_p = text("\(id)_processar")
+              estoque = quantidade(text("\(nome) — estoque atual. Digite 0 se não houver; vazio volta à lista."))
+              if estoque >= 0:
+                comprar = quantidade(text("\(nome) — quantidade para COMPRAR. Digite 0 se nenhuma; vazio volta à lista."))
+                if comprar >= 0:
+                  processar = quantidade(text("\(nome) — quantidade para PROCESSAR. Digite 0 se nenhuma; vazio volta à lista."))
+                  if processar >= 0:
+                    menu("\(nome) · Estoque: \(estoque) · Comprar: \(comprar) · Processar: \(processar)"):
+                      case "Salvar item":
+                        estoque_txt = text(estoque)
+                        comprar_txt = text(comprar)
+                        processar_txt = text(processar)
+                        valores = data.set_value(dictionary: valores, key: chave_e, value: estoque_txt)
+                        valores = data.set_value(dictionary: valores, key: chave_c, value: comprar_txt)
+                        valores = data.set_value(dictionary: valores, key: chave_p, value: processar_txt)
+                        sessao = {"formato": "papa-pizza-simples-1", "data": data, "estado": estado, "cadastro": cadastro, "ordem": ordem, "valores": valores}
+                        salvo = gravar(pasta, nome_arquivo, sessao)
+                      case "Voltar sem salvar":
+                        comment("Preserva o registro anterior, se houver.")
+    if navegando == true:
+      alert("Limite de 120 escolhas nesta execução. Seus itens estão salvos. Veja o resumo e use Continuar conferência para seguir.")
   linhas = ""
   nao_conferidos = ""
   lista_comprar = ""

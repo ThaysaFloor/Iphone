@@ -1,13 +1,15 @@
 # Papa Pizza
 
-Projeto novo e simplificado para Shortcuty Studio.
+Conferência com escolha livre de produtos no Shortcuty Studio.
 
 - [Projeto para importar](PapaPizza.shortcutystudio)
-- [Código Shortcuty](PapaPizza.shortcuty)
 - [Pacote completo](PapaPizza-Novo.zip)
+- [Código](PapaPizza.shortcuty)
 - [Como usar](LEIA-ME.md)
-- [Relatório e testes no iPhone](RELATORIO.md)
+- [Relatório e testes pendentes](RELATORIO.md)
 
-Compilação oficial: zero erros e 33 avisos. Execução no iPhone e assinatura ainda precisam ser testadas.
+⬜ Não conferidos primeiro; ✅ conferidos depois. Escolha qualquer produto, informe as três quantidades e salve. Escolher um conferido permite corrigir seus valores.
 
-No iPhone, crie ou selecione a pasta PapaPizza no iCloud Drive. Use a mesma pasta em cada execução.
+Selecione sempre a mesma pasta PapaPizza no iCloud Drive.
+
+Build oficial: zero erros, 37 avisos SS2101, 553 ações. A interação da nova lista e a execução completa no iPhone ainda precisam ser testadas.
