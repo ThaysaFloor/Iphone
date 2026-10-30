@@ -123,7 +123,7 @@ shortcut:
       compra_existente = data.value(input: valores, key: chave_c)
       processo_existente = data.value(input: valores, key: chave_p)
       if existente has no value or compra_existente has no value or processo_existente has no value:
-        menu(nome):
+        menu("Conferir: \(nome)"):
           case "Conferir":
             estoque = quantidade(text("\(nome) — estoque atual"))
             comprar = quantidade(text("\(nome) — quantidade para COMPRAR (0 = nenhuma)"))
@@ -150,7 +150,7 @@ shortcut:
       quantidade_chaves = count(chaves)
     quantidade_itens = count(ordem)
     pendentes = quantidade_itens - (quantidade_chaves / 3)
-    menu(text("Fim da lista. Não conferidos: \(pendentes).")):
+    menu("Fim da lista. Não conferidos: \(pendentes)."):
       case "Pausar e ver resumo":
         comment("A conferência permanece aberta.")
       case "Finalizar e ver resumo":

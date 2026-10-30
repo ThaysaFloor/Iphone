@@ -18,7 +18,7 @@ Decisões técnicas:
 
 ## Evidência real
 
-O projeto final foi enviado ao endpoint de compilação usado pela interface oficial do Shortcuty Studio, com sessão e CSRF normais. Resultado de Build: `complete`, `ok: true`, compilador `0.1.4`, **0 erros, 33 avisos SS2101 e 403 ações nativas**. O resultado completo está em `compilacao-oficial.json`, com parâmetros das ações e localizações dos avisos.
+O projeto final foi enviado ao endpoint de compilação usado pela interface oficial do Shortcuty Studio, com sessão e CSRF normais. Resultado de Build: `complete`, `ok: true`, compilador `0.1.4`, **0 erros, 33 avisos SS2101 e 402 ações nativas**. O resultado completo está em `compilacao-oficial.json`, com parâmetros das ações e localizações dos avisos.
 
 A checagem inicial encontrou problemas de sintaxe e de opcionais, que foram corrigidos antes da compilação final. O esquema oficial do projeto foi validado localmente com JSON Schema. O conteúdo do projeto importável coincide com o arquivo fonte; o cadastro entregue foi comparado byte a byte com o anexo original.
 
@@ -48,3 +48,11 @@ A captura recebida mostrou “A localização não existe”, mas não identific
 Nova compilação oficial concluída: zero erros, 33 avisos e 403 ações. Os parâmetros compilados foram inspecionados: há seleção explícita de pasta e não há ação de criação de pasta padrão. Isso ainda não comprova que o erro da captura foi resolvido no aparelho. Se persistir, tocar em Mostrar no alerta permite identificar a ação exata.
 
 Para testar a correção: criar/selecionar PapaPizza no iCloud Drive, iniciar uma conferência, confirmar um item, pausar e retomar selecionando a mesma pasta. Verificar também o backup e o resumo. Não mover ou apagar históricos existentes; se já houver uma pasta com conferências, selecioná-la.
+
+## Observações da gravação e correção dos títulos de menu
+
+A gravação recebida mostra a seleção de uma pasta, as perguntas do primeiro produto (Abacaxi Picado), a confirmação com estoque 1, comprar 0 e processar 1, e avanço até a pergunta de estoque de Açúcar. Não aparece o alerta de localização inexistente nesse trecho. Isso evidencia avanço do fluxo, mas não comprova conteúdo dos arquivos, retomada nem resumo.
+
+Os menus dos produtos exibiam o título genérico “Qual?”. O build anterior ligava a variável diretamente a WFMenuPrompt como WFTextTokenAttachment. O código agora usa texto interpolado `Conferir: ...`, compilado como WFTextTokenString, com o nome anexado ao texto. O título dinâmico do menu de encerramento recebeu a mesma correção. Os parâmetros gerados foram inspecionados e confirmados nos dois menus. A confirmação visual no iPhone continua pendente.
+
+Build desta correção: zero erros, 33 avisos SS2101, 402 ações nativas. Cadastro e formato de persistência permanecem iguais.
