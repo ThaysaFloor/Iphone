@@ -18,7 +18,7 @@ Decisões técnicas:
 
 ## Evidência real
 
-O projeto final foi enviado ao endpoint de compilação usado pela interface oficial do Shortcuty Studio, com sessão e CSRF normais. Resultado de Build: `complete`, `ok: true`, compilador `0.1.4`, **0 erros, 32 avisos SS2101 e 393 ações nativas**. O resultado completo está em `compilacao-oficial.json`, com parâmetros das ações e localizações dos avisos.
+O projeto final foi enviado ao endpoint de compilação usado pela interface oficial do Shortcuty Studio, com sessão e CSRF normais. Resultado de Build: `complete`, `ok: true`, compilador `0.1.4`, **0 erros, 33 avisos SS2101 e 403 ações nativas**. O resultado completo está em `compilacao-oficial.json`, com parâmetros das ações e localizações dos avisos.
 
 A checagem inicial encontrou problemas de sintaxe e de opcionais, que foram corrigidos antes da compilação final. O esquema oficial do projeto foi validado localmente com JSON Schema. O conteúdo do projeto importável coincide com o arquivo fonte; o cadastro entregue foi comparado byte a byte com o anexo original.
 
@@ -40,3 +40,11 @@ Use dados de teste antes de adotar no trabalho:
 10. Conferir permissões e destino real em iCloud Drive, sincronização, funcionamento offline com arquivos disponíveis e comportamento após falha de gravação. Nenhuma ação deve apagar históricos.
 
 A assinatura e a instalação pelo Download do Studio também estão pendentes. Não se declara o projeto validado no iPhone nem pronto para uso de produção enquanto esses testes não forem concluídos.
+
+## Correção após teste no iPhone
+
+A captura recebida mostrou “A localização não existe”, mas não identificou a ação. A primeira implementação usava `files.create_folder` sem uma pasta-base explícita, dependendo da localização padrão de Arquivos. Essa dependência foi removida: após o menu, o usuário escolhe uma pasta real pelo seletor nativo (`files.choose`, modo Folders), e todas as leituras e gravações recebem essa seleção. Sair não abre o seletor. O cadastro e o formato dos históricos permanecem iguais.
+
+Nova compilação oficial concluída: zero erros, 33 avisos e 403 ações. Os parâmetros compilados foram inspecionados: há seleção explícita de pasta e não há ação de criação de pasta padrão. Isso ainda não comprova que o erro da captura foi resolvido no aparelho. Se persistir, tocar em Mostrar no alerta permite identificar a ação exata.
+
+Para testar a correção: criar/selecionar PapaPizza no iCloud Drive, iniciar uma conferência, confirmar um item, pausar e retomar selecionando a mesma pasta. Verificar também o backup e o resumo. Não mover ou apagar históricos existentes; se já houver uma pasta com conferências, selecioná-la.

@@ -6,7 +6,7 @@ Implementação criada do zero, independente do repositório e das versões anti
 
 1. Importe `PapaPizza.shortcutystudio` no Shortcuty Studio. A cópia `.shortcutystudio.json` contém o mesmo projeto, caso prefira essa extensão. O arquivo `.shortcuty` permite inspecionar o código isoladamente.
 2. Execute Check e Build, consulte os avisos e use o fluxo Download do Studio para assinar e instalar. Esta entrega não contém um atalho assinado.
-3. No iPhone, autorize acesso a Arquivos/iCloud Drive. O destino esperado é iCloud Drive/Shortcuts/PapaPizza, usando a pasta padrão da ação Arquivos. Confirme esse destino no primeiro teste.
+3. No aplicativo Arquivos do iPhone, crie uma pasta `PapaPizza` no iCloud Drive, se ela ainda não existir. Ao executar o atalho, selecione essa pasta no seletor. Escolha sempre a mesma pasta para salvar, continuar e consultar conferências. O atalho não depende mais da localização padrão Shortcuts.
 
 O cadastro dos 60 produtos foi incorporado ao código para dispensar uma instalação manual do JSON no aparelho. O arquivo original é entregue intacto. Os nove grupos, nomes e IDs permanecem no cadastro e na cópia dentro de cada conferência; a navegação usa uma lista alfabética única.
 

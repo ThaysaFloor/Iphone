@@ -8,4 +8,6 @@ Projeto novo e simplificado para Shortcuty Studio.
 - [Como usar](LEIA-ME.md)
 - [Relatório e testes no iPhone](RELATORIO.md)
 
-Compilação oficial: zero erros e 32 avisos. Execução no iPhone e assinatura ainda precisam ser testadas.
+Compilação oficial: zero erros e 33 avisos. Execução no iPhone e assinatura ainda precisam ser testadas.
+
+No iPhone, crie ou selecione a pasta PapaPizza no iCloud Drive. Use a mesma pasta em cada execução.
