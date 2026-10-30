@@ -1,0 +1,206 @@
+# PAPA PIZZA — projeto novo; sem dependências de versões anteriores.
+def gravar(pasta: File, nome: Text, sessao: Dictionary):
+  anterior = files.open(folder: pasta, path: nome, error_if_missing: false)
+  if anterior is not empty:
+    anterior_arquivo = as_type(anterior, "File")
+    nome_backup = text("\(nome).bak")
+    copia = files.save(item: anterior_arquivo, folder: pasta, destination: nome_backup, ask_where: false, overwrite: true)
+  json_texto = as_type(sessao, "Text")
+  arquivo = as_type(json_texto, "File")
+  salvo = files.save(item: arquivo, folder: pasta, destination: nome, ask_where: false, overwrite: true)
+  return salvo
+
+def quantidade(pergunta: Text) -> Number:
+  resposta = input.ask(prompt: pergunta, type: "Number", ask_action_allows_decimal_numbers: false, ask_action_allows_negative_numbers: false)
+  if resposta has no value:
+    exit()
+  numero = as_type(resposta, "Number")
+  if numero < 0:
+    alert("Use uma quantidade inteira igual ou maior que zero.")
+    exit()
+  inteiro = numbers.round(input: numero, round_mode: "Normal", to: "Ones Place")
+  if inteiro != numero:
+    alert("Use somente números inteiros. O item não foi salvo.")
+    exit()
+  return numero
+
+shortcut:
+  pasta = files.create_folder(path: "PapaPizza")
+  modo = ""
+  menu("Papa Pizza"):
+    case "Nova conferência":
+      modo = "nova"
+    case "Continuar conferência":
+      modo = "continuar"
+    case "Histórico e resumo":
+      modo = "resumo"
+    case "Sair":
+      exit()
+  if modo == "nova":
+    # O cadastro original permanece intacto; a sessão guarda sua própria cópia.
+    cadastro = {"versao": 1, "projeto": "Papa Pizza", "origem": {"arquivo": "Tarefas e Estoque(1).xlsx", "aba": "Dia a Dia"}, "configuracao": {"quantidade": "informada_pelo_usuario", "somente_inteiros": true, "verbo_tarefa": "Processar", "verbo_compra": "Comprar", "permitir_ignorar": true}, "itens": [{"id": 1, "nome": "Massa", "categoria": "Base"}, {"id": 2, "nome": "Molho", "categoria": "Base"}, {"id": 3, "nome": "Calabresa Fatiada", "categoria": "Carnes/Embutidos"}, {"id": 4, "nome": "Presunto Fatiado", "categoria": "Carnes/Embutidos"}, {"id": 5, "nome": "Frango Temperado", "categoria": "Carnes/Embutidos"}, {"id": 6, "nome": "Bacon Frito", "categoria": "Carnes/Embutidos"}, {"id": 7, "nome": "Carne Seca", "categoria": "Carnes/Embutidos"}, {"id": 8, "nome": "Costela", "categoria": "Carnes/Embutidos"}, {"id": 9, "nome": "Lombo Fatiado", "categoria": "Carnes/Embutidos"}, {"id": 10, "nome": "Salaminho", "categoria": "Carnes/Embutidos"}, {"id": 11, "nome": "Pepperoni", "categoria": "Carnes/Embutidos"}, {"id": 12, "nome": "Alho Poró Fatiado", "categoria": "Frios/Vegetais"}, {"id": 13, "nome": "Cebola Fatiada", "categoria": "Frios/Vegetais"}, {"id": 14, "nome": "Tomate Picado", "categoria": "Frios/Vegetais"}, {"id": 15, "nome": "Pimentão Picado", "categoria": "Frios/Vegetais"}, {"id": 16, "nome": "Tomate Seco", "categoria": "Frios/Vegetais"}, {"id": 17, "nome": "Palmito", "categoria": "Frios/Vegetais"}, {"id": 18, "nome": "Abacaxi Picado", "categoria": "Frios/Vegetais"}, {"id": 19, "nome": "Champignon", "categoria": "Frios/Vegetais"}, {"id": 20, "nome": "Muçarela Ralada", "categoria": "Laticínio"}, {"id": 21, "nome": "Gorgonzola", "categoria": "Laticínio"}, {"id": 22, "nome": "Provolone", "categoria": "Laticínio"}, {"id": 23, "nome": "Parmesão", "categoria": "Laticínio"}, {"id": 24, "nome": "Catupiry", "categoria": "Laticínio"}, {"id": 25, "nome": "Cheddar", "categoria": "Laticínio"}, {"id": 26, "nome": "Creme De Leite", "categoria": "Laticínio"}, {"id": 27, "nome": "Molho Barbecue", "categoria": "Finalização/Complemento"}, {"id": 28, "nome": "Ovo Cozido", "categoria": "Finalização/Complemento"}, {"id": 29, "nome": "Manjericão", "categoria": "Finalização/Complemento"}, {"id": 30, "nome": "Orégano", "categoria": "Finalização/Complemento"}, {"id": 31, "nome": "Alho Frito", "categoria": "Finalização/Complemento"}, {"id": 32, "nome": "Caixa 35", "categoria": "Embalagen/Papelaria"}, {"id": 33, "nome": "Caixa 30", "categoria": "Embalagen/Papelaria"}, {"id": 34, "nome": "Maionese", "categoria": "Embalagen/Papelaria"}, {"id": 35, "nome": "Ketchup", "categoria": "Embalagen/Papelaria"}, {"id": 36, "nome": "Bobina Pequena", "categoria": "Embalagen/Papelaria"}, {"id": 37, "nome": "Bobina Grande", "categoria": "Embalagen/Papelaria"}, {"id": 38, "nome": "Bobina Impressora", "categoria": "Embalagen/Papelaria"}, {"id": 39, "nome": "Touca", "categoria": "Embalagen/Papelaria"}, {"id": 40, "nome": "Coca Zero 1,5", "categoria": "Refrigerante"}, {"id": 41, "nome": "Coca Normal 1,5", "categoria": "Refrigerante"}, {"id": 42, "nome": "Guaraná 1,5", "categoria": "Refrigerante"}, {"id": 43, "nome": "Coca Zero 600", "categoria": "Refrigerante"}, {"id": 44, "nome": "Coca Normal 600", "categoria": "Refrigerante"}, {"id": 45, "nome": "Guaraná 600", "categoria": "Refrigerante"}, {"id": 46, "nome": "Creme de Alho", "categoria": "Cozinha"}, {"id": 47, "nome": "Coloral", "categoria": "Cozinha"}, {"id": 48, "nome": "Óleo", "categoria": "Cozinha"}, {"id": 49, "nome": "Cachaça", "categoria": "Cozinha"}, {"id": 50, "nome": "Fermento", "categoria": "Cozinha"}, {"id": 51, "nome": "Trigo", "categoria": "Cozinha"}, {"id": 52, "nome": "Sal", "categoria": "Cozinha"}, {"id": 53, "nome": "Açúcar", "categoria": "Cozinha"}, {"id": 54, "nome": "Detergente", "categoria": "Mat. Limpeza"}, {"id": 55, "nome": "Bucha", "categoria": "Mat. Limpeza"}, {"id": 56, "nome": "Bombril", "categoria": "Mat. Limpeza"}, {"id": 57, "nome": "Cloro", "categoria": "Mat. Limpeza"}, {"id": 58, "nome": "Veja", "categoria": "Mat. Limpeza"}, {"id": 59, "nome": "Álcool", "categoria": "Mat. Limpeza"}, {"id": 60, "nome": "Papel Toalha", "categoria": "Mat. Limpeza"}]}
+    ordem = [{"id": 18, "nome": "Abacaxi Picado", "categoria": "Frios/Vegetais"}, {"id": 53, "nome": "Açúcar", "categoria": "Cozinha"}, {"id": 59, "nome": "Álcool", "categoria": "Mat. Limpeza"}, {"id": 31, "nome": "Alho Frito", "categoria": "Finalização/Complemento"}, {"id": 12, "nome": "Alho Poró Fatiado", "categoria": "Frios/Vegetais"}, {"id": 6, "nome": "Bacon Frito", "categoria": "Carnes/Embutidos"}, {"id": 37, "nome": "Bobina Grande", "categoria": "Embalagen/Papelaria"}, {"id": 38, "nome": "Bobina Impressora", "categoria": "Embalagen/Papelaria"}, {"id": 36, "nome": "Bobina Pequena", "categoria": "Embalagen/Papelaria"}, {"id": 56, "nome": "Bombril", "categoria": "Mat. Limpeza"}, {"id": 55, "nome": "Bucha", "categoria": "Mat. Limpeza"}, {"id": 49, "nome": "Cachaça", "categoria": "Cozinha"}, {"id": 33, "nome": "Caixa 30", "categoria": "Embalagen/Papelaria"}, {"id": 32, "nome": "Caixa 35", "categoria": "Embalagen/Papelaria"}, {"id": 3, "nome": "Calabresa Fatiada", "categoria": "Carnes/Embutidos"}, {"id": 7, "nome": "Carne Seca", "categoria": "Carnes/Embutidos"}, {"id": 24, "nome": "Catupiry", "categoria": "Laticínio"}, {"id": 13, "nome": "Cebola Fatiada", "categoria": "Frios/Vegetais"}, {"id": 19, "nome": "Champignon", "categoria": "Frios/Vegetais"}, {"id": 25, "nome": "Cheddar", "categoria": "Laticínio"}, {"id": 57, "nome": "Cloro", "categoria": "Mat. Limpeza"}, {"id": 41, "nome": "Coca Normal 1,5", "categoria": "Refrigerante"}, {"id": 44, "nome": "Coca Normal 600", "categoria": "Refrigerante"}, {"id": 40, "nome": "Coca Zero 1,5", "categoria": "Refrigerante"}, {"id": 43, "nome": "Coca Zero 600", "categoria": "Refrigerante"}, {"id": 47, "nome": "Coloral", "categoria": "Cozinha"}, {"id": 8, "nome": "Costela", "categoria": "Carnes/Embutidos"}, {"id": 46, "nome": "Creme de Alho", "categoria": "Cozinha"}, {"id": 26, "nome": "Creme De Leite", "categoria": "Laticínio"}, {"id": 54, "nome": "Detergente", "categoria": "Mat. Limpeza"}, {"id": 50, "nome": "Fermento", "categoria": "Cozinha"}, {"id": 5, "nome": "Frango Temperado", "categoria": "Carnes/Embutidos"}, {"id": 21, "nome": "Gorgonzola", "categoria": "Laticínio"}, {"id": 42, "nome": "Guaraná 1,5", "categoria": "Refrigerante"}, {"id": 45, "nome": "Guaraná 600", "categoria": "Refrigerante"}, {"id": 35, "nome": "Ketchup", "categoria": "Embalagen/Papelaria"}, {"id": 9, "nome": "Lombo Fatiado", "categoria": "Carnes/Embutidos"}, {"id": 34, "nome": "Maionese", "categoria": "Embalagen/Papelaria"}, {"id": 29, "nome": "Manjericão", "categoria": "Finalização/Complemento"}, {"id": 1, "nome": "Massa", "categoria": "Base"}, {"id": 2, "nome": "Molho", "categoria": "Base"}, {"id": 27, "nome": "Molho Barbecue", "categoria": "Finalização/Complemento"}, {"id": 20, "nome": "Muçarela Ralada", "categoria": "Laticínio"}, {"id": 48, "nome": "Óleo", "categoria": "Cozinha"}, {"id": 30, "nome": "Orégano", "categoria": "Finalização/Complemento"}, {"id": 28, "nome": "Ovo Cozido", "categoria": "Finalização/Complemento"}, {"id": 17, "nome": "Palmito", "categoria": "Frios/Vegetais"}, {"id": 60, "nome": "Papel Toalha", "categoria": "Mat. Limpeza"}, {"id": 23, "nome": "Parmesão", "categoria": "Laticínio"}, {"id": 11, "nome": "Pepperoni", "categoria": "Carnes/Embutidos"}, {"id": 15, "nome": "Pimentão Picado", "categoria": "Frios/Vegetais"}, {"id": 4, "nome": "Presunto Fatiado", "categoria": "Carnes/Embutidos"}, {"id": 22, "nome": "Provolone", "categoria": "Laticínio"}, {"id": 52, "nome": "Sal", "categoria": "Cozinha"}, {"id": 10, "nome": "Salaminho", "categoria": "Carnes/Embutidos"}, {"id": 14, "nome": "Tomate Picado", "categoria": "Frios/Vegetais"}, {"id": 16, "nome": "Tomate Seco", "categoria": "Frios/Vegetais"}, {"id": 39, "nome": "Touca", "categoria": "Embalagen/Papelaria"}, {"id": 51, "nome": "Trigo", "categoria": "Cozinha"}, {"id": 58, "nome": "Veja", "categoria": "Mat. Limpeza"}]
+    agora = now()
+    data_lista = dates.format(date: agora, date_style: "Custom", date_format: "yyyy-MM-dd_HH-mm-ss", time_style: "None")
+    data = combine(data_lista, separator: "")
+    sufixo = random(100000000, 999999999)
+    nome_arquivo = text("conferencia_\(data)_\(sufixo).json")
+    colisao = files.open(folder: pasta, path: nome_arquivo, error_if_missing: false)
+    if colisao is not empty:
+      alert("Já existe uma conferência com este nome. Execute novamente; nenhum histórico foi alterado.")
+      exit()
+    valores = {}
+    estado = "aberta"
+    sessao = {"formato": "papa-pizza-simples-1", "data": data, "estado": estado, "cadastro": cadastro, "ordem": ordem, "valores": valores}
+    salvo = gravar(pasta, nome_arquivo, sessao)
+  else:
+    arquivos = files.contents(folder: pasta)
+    historicos = files.filter(items: arquivos, property: "File Extension", equals: "json", sort_by: "Name", order: "Descending", limit: 100000)
+    if historicos is empty:
+      alert("Nenhuma conferência salva. Escolha Nova conferência.")
+      exit()
+    recentes = lists.item(items: historicos, specifier: "Items in Range", item_range_start: 1, item_range_end: 5)
+    menu("Escolher conferência"):
+      case "Cinco mais recentes":
+        escolha = lists.choose(items: recentes, prompt: "Data e hora da conferência", multiple: false)
+      case "Todas as conferências":
+        escolha = lists.choose(items: historicos, prompt: "Data e hora da conferência", multiple: false)
+    if escolha has no value:
+      exit()
+    arquivo_escolhido = as_type(escolha, "File")
+    nome_lista = files.name(item: arquivo_escolhido)
+    nome_arquivo = combine(nome_lista, separator: "")
+    conteudo = as_type(arquivo_escolhido, "Text")
+    sessao = as_type(conteudo, "Dictionary")
+    formato = sessao["formato"]
+    if formato != "papa-pizza-simples-1":
+      alert("Este arquivo não é uma conferência deste projeto.")
+      exit()
+    cadastro_bruto = sessao["cadastro"]
+    valores_brutos = sessao["valores"] ?? {}
+    ordem_bruta = sessao["ordem"]
+    data_bruta = sessao["data"]
+    estado_bruto = sessao["estado"]
+    if cadastro_bruto has no value or ordem_bruta has no value or data_bruta has no value or estado_bruto has no value:
+      alert("Arquivo incompleto. Preserve-o e recupere a cópia .bak pelo aplicativo Arquivos.")
+      exit()
+    cadastro_bruto = require(cadastro_bruto)
+    valores_brutos = require(valores_brutos)
+    ordem_bruta = require(ordem_bruta)
+    data_bruta = require(data_bruta)
+    estado_bruto = require(estado_bruto)
+    cadastro = as_type(cadastro_bruto, "Dictionary")
+    valores = as_type(valores_brutos, "Dictionary")
+    ordem = ordem_bruta
+    data = as_type(data_bruta, "Text")
+    estado = as_type(estado_bruto, "Text")
+  if modo == "continuar" and estado == "finalizada":
+    alert("Conferência finalizada: disponível somente para consulta.")
+    modo = "resumo"
+  if modo != "resumo":
+    for item in ordem:
+      p = as_type(item, "Dictionary")
+      id_bruto = p["id"]
+      nome_bruto = p["nome"]
+      if id_bruto has no value:
+        alert("Cadastro incompleto. Nenhuma alteração neste item.")
+        exit()
+      if nome_bruto has no value:
+        exit()
+      id = as_type(id_bruto, "Text")
+      nome = as_type(nome_bruto, "Text")
+      chave_e = text("\(id)_estoque")
+      chave_c = text("\(id)_comprar")
+      chave_p = text("\(id)_processar")
+      existente = data.value(input: valores, key: chave_e)
+      compra_existente = data.value(input: valores, key: chave_c)
+      processo_existente = data.value(input: valores, key: chave_p)
+      if existente has no value or compra_existente has no value or processo_existente has no value:
+        menu(nome):
+          case "Conferir":
+            estoque = quantidade(text("\(nome) — estoque atual"))
+            comprar = quantidade(text("\(nome) — quantidade para COMPRAR (0 = nenhuma)"))
+            processar = quantidade(text("\(nome) — quantidade para PROCESSAR (0 = nenhuma)"))
+            alert(text("\(nome)\nEstoque: \(estoque)\nComprar: \(comprar)\nProcessar: \(processar)"), title: "Confirmar item", cancel: true)
+            estoque_txt = text(estoque)
+            comprar_txt = text(comprar)
+            processar_txt = text(processar)
+            valores = data.set_value(dictionary: valores, key: chave_e, value: estoque_txt)
+            valores = data.set_value(dictionary: valores, key: chave_c, value: comprar_txt)
+            valores = data.set_value(dictionary: valores, key: chave_p, value: processar_txt)
+            # Uma gravação por item; as três quantidades são confirmadas juntas.
+            sessao = {"formato": "papa-pizza-simples-1", "data": data, "estado": estado, "cadastro": cadastro, "ordem": ordem, "valores": valores}
+            salvo = gravar(pasta, nome_arquivo, sessao)
+          case "Deixar para depois":
+            comment("Permanece não conferido e reaparece na próxima retomada.")
+          case "Pausar":
+            alert("Os itens confirmados estão salvos. Use Continuar conferência para retomar.")
+            exit()
+    chaves = data.keys(input: valores, get_dictionary_value_type: "All Keys")
+    if chaves has no value:
+      quantidade_chaves = 0
+    else:
+      quantidade_chaves = count(chaves)
+    quantidade_itens = count(ordem)
+    pendentes = quantidade_itens - (quantidade_chaves / 3)
+    menu(text("Fim da lista. Não conferidos: \(pendentes).")):
+      case "Pausar e ver resumo":
+        comment("A conferência permanece aberta.")
+      case "Finalizar e ver resumo":
+        alert("Finalizar torna esta conferência somente para consulta, inclusive se houver itens não conferidos. Confirmar?", cancel: true)
+        estado = "finalizada"
+        sessao = {"formato": "papa-pizza-simples-1", "data": data, "estado": estado, "cadastro": cadastro, "ordem": ordem, "valores": valores}
+        salvo = gravar(pasta, nome_arquivo, sessao)
+  linhas = ""
+  nao_conferidos = ""
+  lista_comprar = ""
+  lista_processar = ""
+  faltam = 0
+  for item in ordem:
+    p = as_type(item, "Dictionary")
+    id_bruto = p["id"]
+    nome_bruto = p["nome"]
+    if id_bruto has no value:
+      alert("Cadastro inválido no arquivo selecionado.")
+      exit()
+    if nome_bruto has no value:
+      exit()
+    id = as_type(id_bruto, "Text")
+    nome = as_type(nome_bruto, "Text")
+    # Escape HTML de todo nome vindo do JSON.
+    seguro1 = replace(nome, "&", with: "&amp;")
+    seguro2 = replace(seguro1, "<", with: "&lt;")
+    seguro = replace(seguro2, ">", with: "&gt;")
+    chave_e = text("\(id)_estoque")
+    chave_c = text("\(id)_comprar")
+    chave_p = text("\(id)_processar")
+    e = data.value(input: valores, key: chave_e)
+    c = data.value(input: valores, key: chave_c)
+    t = data.value(input: valores, key: chave_p)
+    if e has value and c has value and t has value:
+      e = require(e)
+      c = require(c)
+      t = require(t)
+      en = as_type(e, "Number")
+      cn = as_type(c, "Number")
+      tn = as_type(t, "Number")
+      linhas = text("\(linhas)<tr><td>\(seguro)</td><td>\(en)</td><td>Sim</td><td>\(cn)</td><td>\(tn)</td></tr>")
+      if cn > 0:
+        lista_comprar = text("\(lista_comprar)<li>\(seguro): \(cn)</li>")
+      if tn > 0:
+        lista_processar = text("\(lista_processar)<li>\(seguro): \(tn)</li>")
+    else:
+      faltam = faltam + 1
+      linhas = text("\(linhas)<tr><td>\(seguro)</td><td></td><td>Não</td><td></td><td></td></tr>")
+      nao_conferidos = text("\(nao_conferidos)<li>\(seguro)</li>")
+  html = text("""
+    <!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Papa Pizza</title><style>body{font:16px system-ui;margin:16px;color:#222}table{border-collapse:collapse;width:100%;font-size:14px}td,th{padding:8px;border:1px solid #ddd;text-align:left}th{background:#eee}li{margin:6px 0}</style>
+    <h1>Papa Pizza</h1><p>\(data) · \(estado) · Não conferidos: \(faltam)</p>
+    <table><thead><tr><th>Item</th><th>Estoque atual</th><th>Conferido?</th><th>Qtd. comprar</th><th>Qtd. processar</th></tr></thead><tbody>\(linhas)</tbody></table>
+    <h2>Não conferidos</h2><ul>\(nao_conferidos)</ul><h2>Comprar</h2><ul>\(lista_comprar)</ul><h2>Processar</h2><ul>\(lista_processar)</ul></html>
+    """)
+  arquivo_html = as_type(html, "File")
+  nome_html = "Resumo.html"
+  html_nomeado = files.rename_file(file: arquivo_html, name: nome_html)
+  preview(html_nomeado)
